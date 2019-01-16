@@ -1,0 +1,387 @@
+//Web Dev - Lecture 1
+ khoury.neu.edu/~ntuck
+
+ Bittorent -> protocol
+
+ Protocol -> a way to structure data/messages over some sort of communication channel
+  -ex: HTTP: Hypertext transfer Protocol
+       HTTPS: HTTP over TLS(security encryption)
+Web content -> HTML, JPEG, PNG, SVG, GIF, CSS, JS, XML, JSON
+
+Two Ways:
+-In-browser: -HTML, CSS, and JS
+             -JS is written to target JS->JS compiler to add features
+             Transpiler: Babel
+             -UI Framework: React.js
+-On-Server:  -Output HTTP responses
+             -server-side development ex: FORTRAN
+             -popular ones: php,node js, Ruby/Python
+             -Using Elixir
+                -Pheonix Framework
+Set up VPS:
+-Vultr(VC2)
+-Add new server(NJ)
+-Ubuntu 18.04
+-$5/mo
+-1GB Mem
+-IPV6, Backups
+-SSH, name server(cs4550)
+-login, ssh root@IP-address
+
+In-server console:
+root@cs4550: ufw
+             ufw allow 22/tcp (this is ssh key)
+             ufw allow 60/tcp (this is HTTP)
+             ufw allow 443/tcp (this is SSL)
+             ufw allow 4000/tcp (this is development mode)
+             ufw enable
+             ufw status
+             dpkg-reconfigure --priority=low unattended-upgrades
+             (yes)
+             adduser cara
+             (y)
+             ls /home
+In-local console:
+            ssh-copy-id cara@IP-address
+            passwork
+Back to server:
+            adduser cara sudo
+            logout
+Back to local:
+            sudo su -
+            password
+            cd/etc/SSH
+            PermitRootLogin : No
+Set up websites on DNS
+Reload -> ctrl R
+
+//Web Dev - Lecture 2
+
+Web Protocol: HTTP
+  - GET : request a file by path
+  - POST : submit data for a form
+Ex:
+telnet seagull.ccs.neu.edu 80 : make tcp connection on that server on that port
+GET / HTTP/1.0
+
+Problems with HTTP 1.0:
+  -No concept of a session.
+  -No way to have multiple web sites per IP address
+
+New version: HTTP/1.1
+  -Host Header allows multiple sites per IP (server).
+
+Ex:
+telnet seagull.ccs.neu.edu 80
+GET / HTTP/1.1
+Host: seagull.ccs.neu.edu
+
+telnet seagull.ccs.neu.edu 80
+GET / HTTP/1.1
+Host: example.com
+Connection: close
+
+HTTP 1.1 is still stateless but adds Cookies
+  -The server can send a Cookie header ina n HTTP response.
+  -When the browser makes further requests to the same site, it sends back the cookie exactly
+
+Advances since HTTP/1.1
+  -HTTPS - Adds encryption and authentication with TLS
+  -HTTP 2.0 - Replace the text HTTP/1.1 protocol with a basically equivalent binary protocol
+
+Added feature: Websockets
+  -Websockets basically simulated TCP over HTTP
+  -Stupid, but bypasses firewalls
+
+Anything can be a webserver if it sends HTTP responses in response to HTTP requests
+  -The modern norm for server-side web application is for you app the actually be a web server.
+  -Normally the app listens locally on a high port (e.g. 8000) and then the normal web server reverse proxies requests to it.
+
+  Browser Technology
+    -HTML, CSS, JS
+    -HTML is HTML5
+    -Css was last CSS3
+
+<html>
+  <head>
+    <title>Hello from HTML2</title>
+  </head>
+  <body>
+    <h1>Hello from HTML2</h1>
+    <p>this is an HTML2 document.
+  </body>
+</html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>HTML5 Document</title>
+    <!--comment -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+      h1 { color: red }
+    </style>
+  </head>
+  <body>
+    <h1> HTML5 Document</h1>
+
+    <script>
+      alert("hello");
+    </script>
+
+    <p>After the script.</p>
+  </body>
+</html>
+
+More Complicated:
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>HTML5 Document</title>
+    <!--comment -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+      h1.red-text { color: red }
+    </style>
+  </head>
+  <body>
+    <h1 class="red-text"> HTML5 Document</h1>
+    <h1>Not Red</h1>
+
+    <p>After the script.</p>
+
+    ,p id="data-dst">&nbsp;</p>
+    <p id="input-p">
+      <input id="data-src" type="text">
+      <button id="click-me"
+  </body>
+</html>
+
+Javascript
+(function() {
+
+})();
+
+//Web Dev - Lecture 3
+
+Examples : page.html, style.css
+
+Debug ctrl shift J to edit in web browser
+
+JavaScript
+- JavaScript is about as different from Java as a language can be.
+
+JavaScript is:
+- Dynamically typed.
+- Hash-oriented.
+  - The main collection data type is an "object", or string keyed hash map.
+- Has a protybe based object model. There are methods but no classes.
+- Works pretty well for functional style programming.
+Examples:
+5 == "5" -> false
+[] == ![] -> true
+[] == [] -> false
+1 < 2 < 3 -> true
+3 > 2 > 3 -> false
+
+function Posn(x, y) {
+  this.x = x;
+  this.y = y;
+  this.dist_from_origin = function() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  };
+}
+
+function add4(x) { return x + 4; }
+add4(7) -> 11
+
+var aa = new Posn(4, 4);
+aa -> Posn { x:4 y: 4, dist_from_center: [Function] }
+aa.dist_from_center() -> 5.6568
+
+var bb = Posn(4,4);
+bb.dist_from_cetner(); -> Cannot read property 'dist_from_center' -> this is because we forgot new
+
+var zz = { foo: foo };
+zz.foo(7); -> 11
+zz.y; -> 11
+
+function bar(x) {
+  function bar2() {
+    return this.y;
+    }
+  this.y = 7;
+  return bar2();
+  }
+
+var yy = { bar: bar };
+yy.bar(); -> 4
+y -> 4
+
+(function() { return this.y; })() -> 4
+
+function baz() {
+  var baz2 = () => {return this.y;}
+  this.y =22;
+  return baz2();
+  }
+
+var ww = { baz: baz};
+
+ww.baz(); -> 22
+y -> 4
+
+Alternative way to do Object Oriented JS
+
+let default_posn = {
+  x: 0,
+  y: 0,
+  dist: function() { return this.x + this.y },
+  };
+
+default_posn.dist(); -> 0
+let p1 = Object.create(default_posn,{y: 5});
+p1 -> {}
+p1.x -> 0
+p1.y -> 0
+p1.x = 5; -> 5
+p1.y = 7; -> 7
+p1 -> {x: 5, y: 7}
+p1.dist() -> 12
+
+In HTML use <script src="code.js"></script>
+
+JS :
+window.NatsLibrary = (function() {
+  "use strict";
+
+  function init() {
+    var hello = document.getElementById('hello');
+    hello.innerText = "hello there";
+  }
+
+  //Delay the setup code until page is fully loaded.
+  window.addEventListener('load', init, false);
+
+  function hello() {
+    console.log("Hello, World");
+  }
+
+  return {
+    hello: hello
+  };
+})();
+
+(function() {
+  "use strict";
+
+  function clicked(btn_id) {
+    alert("clicked button: " + btn_id);
+  }
+
+  function init() {
+    var hello = document.getElementById('hello');
+    hello.innerText = "hello there";
+
+    var btn1 = document.getElementById('btn1');
+    btn1.addEventListener('click', function() {clicked(1); });
+
+    var btn2 = document.getElementById('btn2');
+    btn2.addEventListener('click', function() {clicked(2); });
+
+  }
+
+  //Delay the setup code until page is fully loaded.
+  window.addEventListener('DOMCententLoaded', init, false);
+})();
+
+(function() {
+  "use strict";
+
+  function clicked(ev) {
+    alert("clicked button: " + ev,target,getAttribute('data-btn-id'));
+  }
+
+  function init() {
+    var hello = document.getElementById('hello');
+    hello.innerText = "hello there";
+
+    var btn1 = document.getElementById('btn1');
+    btn1.addEventListener('click', clickeded);
+  }
+
+  //Delay the setup code until page is fully loaded.
+  window.addEventListener('DOMCententLoaded', init, false);
+})();
+
+Beginning HTML Page:
+<html lang="en">
+  <head>
+    <meta charset= "utf-8">
+    <title>JS and DOM Demo</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>JS and DOM Demo</h1>
+    <p id="hello">...</p>
+
+    <p><button id="btn1" data-btn-id="1">Click Me 1</button></p>
+    <p><button id="btn2" data-btn-id="2">Click Me 2</button></p>
+
+    <div class="aaa">
+      <div class="bbb">
+        <p>111</p>
+        <p>111</p>
+      </div>
+
+Tutorials:
+-using CSS external file:
+HTML:
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+style.css:
+body {
+  background-color: powderblue;
+}
+h1 {
+  color: blue;
+  font-family: verdana;
+  font-size: 300%;
+}
+p  {
+  color: red;
+  font-family: courier;
+  font-size: 160%;
+  border: 1px solid powderblue;
+}
+
+using id attribute:
+
+HTML:
+<p id="p01">I am different</p>
+
+CSS:
+#p01 {
+  color: blue;
+}
+
+Separate Letters:
+HTML:
+<p>
+  <span id="c1">C</span>
+  <span id="c2">A</span>
+  <span id="c3">T</span>
+</p>
+
+CSS:
+#c1 {
+  color: blue;
+}
+#c2{
+  color: red;
+}
+#c3 {
+  color: green;
+}
