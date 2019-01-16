@@ -11,6 +11,6 @@
   text-align: center;
 }
 
-#calculator td, #customers th {
+#calculator td {
   height: 50px;
 }
