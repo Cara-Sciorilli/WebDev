@@ -394,3 +394,160 @@ Click on picture adn bring to link:
   <area shape="rect" coords="290,172,333,250" alt="Phone" href="phone.htm">
   <area shape="circle" coords="337,300,44" alt="Coffee" href="coffee.htm">
 </map>
+
+Web Dev - Lecture 4
+Elixir language
+Why would you pick a specific language?
+-Performance properties like RAM usage
+-Availability
+-Because you know it
+-For low level task, you need a low level language
+  -On a microcontroller you-re not using Ruby.
+-If you have deployment environment constraints
+  -If you;re already on Java VM, you're going to use a JVM language.
+-Some languages have concrete features that make them good in
+special domains. For example, computing on big arrays works well in FORTRAN.
+-For Web Development
+
+
+
+Horizontal Scaling:
+  -When our application doesn't fit on one server, we can scale by adding more servers running copies of our application.
+
+Traditional solution:
+  -Make the code that handles each we request be entirely isolated form code that handles other requests.
+  -Run a separate copy of our app for each concurrent user.
+  -Works well for most apps.
+  -Doesn't work for our day 1 example: Draw
+
+Using Elixir:
+  -Erlang was built for "5 9's" uptime, or 99.999%
+  -Only one way to avoid failure when hardware breaks: Have duplicate hardware.
+  -This means that Erlang was built for distributed systems from start for reliability.
+  -Concurrency came along for the ride.
+
+Another reliability trick:
+  -Processes (like classes)
+  -"Let it crash"
+
+Erlang semantics are great. Erlang syntax is painful.
+  -calling a user defined function in the condition of an if expression is a syntax error
+  -Elixir has the semantics but not the syntax.
+
+The Elixir plan for web apps:
+  -Spawn a new process for each incoming web request
+  -Erlang process can store state to manage a long-running request.
+  -Safe communication between processes, even across servers, is managed by the vm
+
+Elixir is basically ISL+ from Fundies 1
+
+Similarities:
+  -Functional languages
+    -Functions are pure: Given the same inputs, you always get the same outputs.
+    -Immutable data
+    -Can't re-assign variables
+  -Linked lists as core data uptime
+  -No loop statements
+  -Repeat by recursion
+  -Loop functions: map,filter, reduce
+  -Interactive Replace
+
+Differences:
+  -Non-LISP syntax
+  -Separate function / variable namespaces
+  -Modules
+  -Pattern matching
+
+  -Side effects (I/O)
+  -Maps (associative arrays) as core data type
+  -Lightweight Processes
+  -send / receive
+
+Code:
+defmodule Fib do
+  #Fibonacci Numbers
+  # fib(0) = 0
+  # fib(1) = 1
+  # fib(x) = fib(x-1) + fib(x-2)
+  #       when x>1
+
+  def fib(0), do: 0
+  def fib(1), do: 1
+  def fib(x) when x>1 do
+    fib(x-1) + fib(x-2)
+  end
+end
+
+in terminal: iex opens Interactive Elixir
+iex(1)>Fib.fib(10) -> 55
+
+defmodule Fact do
+
+  def fact(1), do: 1
+  def fact(x), do
+    x * fact(x-1)
+  end
+end
+
+Avoid deep recursion above with an accumulator.
+defmodule Fact do
+
+  def fact(x) do //first function
+    fact(x, 1)
+  end
+
+  def fact(x,acc) when x<=1 do //second function
+    acc
+  end
+
+  def fact(x,acc) do //second clause of second function
+    fact(x-1,x * acc)
+  end
+end
+
+Print in script:
+IO.puts "Hi"
+
+#This script:
+# -loops forever
+#   -read a line of text from the user
+#   -reverse the words in the input
+#   -print out the result
+
+#Example:
+# input: hello its thursday
+# output: thursday its hello
+
+defmodule RW do
+  def loop() do
+    case IO.gets("input: ") do
+      :eof ->
+        IO.puts "All done"
+      line ->
+        IO.puts(reverse_words(line))
+        loop()
+    end
+  end
+
+#  def reverse_words(line) do
+#    Enum.join(Enum.reverse(String.split(line)), " ")
+#  end
+#instead of code above use pipelines(|>)
+#pipe calls function on right stuffs into left Sid
+#next time pipe is used it becomes first argument of next
+#proccess
+  def reverse_words(line) do
+    line
+    |> String.split() #argument is line
+    |> Enum.map(&reverse_chars/1)
+    |> Enum.reverse() #argument is String.split(line)
+    |> Enum.join(" ") #arguments are
+                      #(Enum.reverse(String.split(line)), " ")
+  end
+end
+
+Assignment:
+clone git repository
+mix deps.gets
+into assets/
+ad TODO to see what we have to do

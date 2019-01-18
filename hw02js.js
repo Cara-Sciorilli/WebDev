@@ -1,46 +1,50 @@
-/*Need to do: figure out how to do decimal and more than one digit numbers- is probably the same solution, thinking use the lastClickedNum boolean defined below, also handle clicking operations in a row(look at piazza), figure out if you are supposed to display the calculations as you go or only when = is pressed*/
-var currentSolution = 0;
-var operation = "";
-var lastClickedNum = true;
-var buttons = document.getElementsByClassName("button")
-for(i=0; i<buttons.length; i++){
-  buttons[i].addEventListener("click", function() {myCalcFunction(this);});
+(function(){
+var state = {currentSol: 0, operation: "", nextNum: ""}
+
+function init() {
+  var buttons = document.getElementsByClassName("button")
+  for(i=0; i<buttons.length; i++){
+    buttons[i].addEventListener("click", function() {myCalcFunction(this);});
+  }
 }
 
 function myCalcFunction(button) {
   var name = button.innerHTML;
-  if(name == "+=") {
-    operation = name;
-    document.getElementById("display").innerHTML = currentSolution;
+  console.log(state);
+  if(name == "C"){
+    state.currentSol = 0;
+    state.nextNum = "";
+    state.operation = "";
+    document.getElementById("display").innerHTML = state.currentSol;
   }
-  else if (name == "-" || name == "*" || name == "/" || name == "."){
-    operation = name;
-  }
-  else if(name == "C"){
-    currentSolution = 0;
-    operation = "";
-    document.getElementById("display").innerHTML = currentSolution;
+  else if (name == "+=" || name == "-" || name == "*" || name == "/"){
+    let parsed = eval(state.nextNum);
+    if(state.operation == "+=") {
+      state.currentSol += parsed;
+    }
+    else if(state.operation == "-"){
+      state.currentSol -= parsed;
+    }
+    else if(state.operation == "*"){
+      state.currentSol *= parsed;
+    }
+    else if(state.operation == "/"){
+      state.currentSol /= parsed;
+    }
+    else if(state.operation == "") {
+      state.currentSol = parsed;
+    }
+    state.operation = name;
+    state.nextNum = "";
+    if(name == "+="){
+      document.getElementById("display").innerHTML = state.currentSol;
+    }
   }
   else {
-    if(operation == "") {
-      currentSolution = parseFloat(name);
-      document.getElementById("display").innerHTML = currentSolution;
-    }
-    else if (operation == "+=") {
-      currentSolution += parseFloat(name);
-    }
-    else if (operation == "-") {
-      currentSolution -= parseFloat(name);
-    }
-    else if (operation == "*") {
-      currentSolution *= parseFloat(name);
-    }
-    else if (operation == "/") {
-      currentSolution /= parseFloat(name);
-    }
-    else if (operation == ".") {
-      currentSolution += ".";
-    }
+    state.nextNum += name;
+    document.getElementById("display").innerHTML = state.nextNum;
   }
-  //document.getElementById("display").innerHTML = currentSolution; put this in if you display solution as you go
 }
+//Delay the setup code until page is fully loaded.
+window.addEventListener('DOMContentLoaded', init, false);
+})();
