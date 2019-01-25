@@ -550,4 +550,39 @@ Assignment:
 clone git repository
 mix deps.gets
 into assets/
-ad TODO to see what we have to do
+ag TODO to see what we have to do
+
+//Web Dev - Lecture 5
+
+Double a number:
+- You type in a  anumber.
+- Press a button.
+- This is an HTML form.
+- Pressing a button makes an HTTP POST request.
+- Request is handled by a "double" function.
+- That value is sufficient to produce an HTTP response to send to the browser.
+
+A double function:
+  function double(http request) -> http response
+
+Process:
+First router
+Then controller
+Then render templates
+
+Request processing in Pheonix:
+requests
+|> router
+|> pipeline
+|> controller action
+|> template
+
+Deployment:
+In root
+adduser practice
+password
+Full Name - practice app
+sudo su - practice
+clone git repository
+
+systemd
